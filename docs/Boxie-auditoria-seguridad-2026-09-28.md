@@ -56,7 +56,7 @@ que se puedan revocar, backups, mails y monitoreo.
      regalo con clave; hoy no hay clientes reales, así que no cuesta nada.
   4. Sacar los valores por defecto de `scripts/create-admin.mjs`: que exija mail y clave y rechace la
      de demo. Fue así como la clave de demo llegó a producción.
-- **Revisar:** en la bitácora (**Actividad**) aparece `zaxloro02@gmail.com` invitando y eliminando
+- **Revisar:** en la bitácora (**Actividad**) aparece la cuenta de uno de los dueños invitando y eliminando
   miembros el 25 y el 26/09, y hoy no figura en el equipo. Confirmar que es de ustedes.
 
 ### [ ] P0-2 · Usuarios del seed en Supabase Auth con claves públicas

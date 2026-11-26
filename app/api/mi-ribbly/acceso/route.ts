@@ -1,8 +1,10 @@
 import { after, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { isDemoMode } from '@/server/demo'
+import { env } from '@/server/env'
 import { log } from '@/server/log'
 import { clientIp, rateLimit } from '@/server/rate-limit'
+import { reconcilePendingOrders } from '@/server/reconcile'
 import { resendAccessByEmail } from '@/server/recovery'
 
 /**
@@ -51,6 +53,13 @@ export async function POST(request: Request) {
   // Se responde enseguida y el reenvío sigue después: tardar más cuando el
   // mail tiene compras delataría que existe.
   after(async () => {
+    // Si pagó y el aviso de Mercado Pago nunca llegó, la Ribbly se crea acá
+    // (y le llega el mail del editor): es justo quien viene a buscarla.
+    if (env().PAYMENTS_PROVIDER === 'mercadopago') {
+      await reconcilePendingOrders({ email }).catch((error) =>
+        log.error('Recuperar acceso: falló la conciliación', error),
+      )
+    }
     try {
       await resendAccessByEmail(email)
     } catch (error) {

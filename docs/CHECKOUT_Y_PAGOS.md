@@ -176,6 +176,18 @@ El endpoint activo está en `/api/webhooks/mercadopago`. Se configura en Mercado
 con la URL completa del sitio (ej. `https://ribbly.com.ar/api/webhooks/mercadopago`) y el **Secreto de firma** va en la variable `MP_WEBHOOK_SECRET`.
 Cada notificación valida la firma HMAC-SHA256 (`x-signature`), consulta el estado del pago con la API de Mercado Pago y aplica la orden con idempotencia mediante `applyPaymentNotice({ source: 'webhook' })`.
 
+### Conciliación (si el webhook no llega)
+
+Si Mercado Pago cobra, el webhook no llega y el comprador cierra la pestaña antes de volver, la orden quedaría pendiente
+con el pago hecho. `src/server/reconcile.ts` busca órdenes de MP pendientes (de 15 minutos a 10 días) y consulta
+`/v1/payments/search` por `external_reference`; los pagos aprobados se aplican por el mismo camino (`source: 'reconcile'`),
+y llega el mail del editor. Corre:
+
+- en el cron diario `/api/cron/conciliar` (`vercel.json`, necesita `CRON_SECRET`);
+- al pedir "recuperar acceso" en `/mi-ribbly`, solo con las órdenes de ese mail.
+
+Cada pago recuperado se reporta como error en Sentry: quiere decir que el webhook está fallando y hay que revisarlo.
+
 ---
 
 ## 4. Archivos Clave del Circuito

@@ -28,7 +28,7 @@ export interface PaymentNotice {
   status: PaymentStatus
   amountCents: number
   currency: string
-  source: 'webhook' | 'return' | 'admin' | 'checkout'
+  source: 'webhook' | 'return' | 'admin' | 'checkout' | 'reconcile'
   raw?: Json
 }
 

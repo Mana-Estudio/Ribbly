@@ -19,7 +19,7 @@ import type { Plan } from '@/domain/plans'
 import { buyerSlides, parseThemeConfig } from '@/slides/config'
 import { configForPlan } from '@/slides/plans'
 import type { ThemeConfigInput } from '@/slides/theme-config'
-import { serviceDb, unwrap, unwrapMaybe } from '../db/client'
+import { selectAll, serviceDb, unwrap, unwrapMaybe } from '../db/client'
 import type { Json, Tables, TablesUpdate } from '../db/database.types'
 import { env, siteUrl } from '../env'
 import { log } from '../log'
@@ -276,10 +276,15 @@ async function themesWithVersions() {
       .select('*')
       .order('sort_order')
       .then((r) => unwrap(r, 'temáticas')),
-    db()
-      .from('theme_versions')
-      .select('id, theme_id, version, config, published_at, created_by')
-      .then((r) => unwrap(r, 'versiones')),
+    selectAll(
+      (from, to) =>
+        db()
+          .from('theme_versions')
+          .select('id, theme_id, version, config, published_at, created_by')
+          .order('id')
+          .range(from, to),
+      'versiones',
+    ),
   ])
   return { themes, versions }
 }
@@ -294,14 +299,14 @@ function modulesTotalFor(config: Json | undefined, plan: Plan | undefined, plans
 
 async function loadBoxies(orders: AdminOrder[], versions: VersionRow[], plans: Plan[]) {
   const [rows, stats] = await Promise.all([
-    db()
-      .from('boxies')
-      .select(BOXIE_COLUMNS)
-      .then((r) => unwrap(r, 'Ribblys')),
-    db()
-      .from('admin_boxie_stats')
-      .select('*')
-      .then((r) => unwrap(r, 'estadísticas de Ribblys')),
+    selectAll(
+      (from, to) => db().from('boxies').select(BOXIE_COLUMNS).order('id').range(from, to),
+      'Ribblys',
+    ),
+    selectAll(
+      (from, to) => db().from('admin_boxie_stats').select('*').order('boxie_id').range(from, to),
+      'estadísticas de Ribblys',
+    ),
   ])
   const statsById = new Map(stats.map((s) => [s.boxie_id, s]))
   const orderById = new Map(orders.map((o) => [o.id, o]))
@@ -337,35 +342,40 @@ export const supabaseRepo: AdminRepo = {
         this.getSettings(),
         this.listPlans(),
         themesWithVersions(),
-        db()
-          .from('coupons')
-          .select('*')
-          .order('created_at', { ascending: false })
-          .then((r) => unwrap(r, 'cupones').map(toCoupon)),
-        db()
-          .from('affiliates')
-          .select('*')
-          .then((r) =>
-            unwrap(r, 'afiliados').map((a): AdminAffiliate => ({
-              id: a.id,
-              name: a.name,
-              code: a.code,
-              commissionBps: a.commission_bps,
-              active: a.active,
-              email: a.email,
-              notes: a.notes,
-              createdAt: a.created_at,
-            })),
-          ),
-        db()
-          .from('orders')
-          .select('*')
-          .order('created_at')
-          .then((r) => unwrap(r, 'órdenes').map(toOrder)),
-        db()
-          .from('expenses')
-          .select('*')
-          .then((r) => unwrap(r, 'gastos').map(toExpense)),
+        selectAll(
+          (from, to) =>
+            db()
+              .from('coupons')
+              .select('*')
+              .order('created_at', { ascending: false })
+              .order('id')
+              .range(from, to),
+          'cupones',
+        ).then((rows) => rows.map(toCoupon)),
+        selectAll(
+          (from, to) => db().from('affiliates').select('*').order('id').range(from, to),
+          'afiliados',
+        ).then((rows) =>
+          rows.map((a): AdminAffiliate => ({
+            id: a.id,
+            name: a.name,
+            code: a.code,
+            commissionBps: a.commission_bps,
+            active: a.active,
+            email: a.email,
+            notes: a.notes,
+            createdAt: a.created_at,
+          })),
+        ),
+        selectAll(
+          (from, to) =>
+            db().from('orders').select('*').order('created_at').order('id').range(from, to),
+          'órdenes',
+        ).then((rows) => rows.map(toOrder)),
+        selectAll(
+          (from, to) => db().from('expenses').select('*').order('id').range(from, to),
+          'gastos',
+        ).then((rows) => rows.map(toExpense)),
       ])
     const boxies = await loadBoxies(orders, versions, plans)
     return {

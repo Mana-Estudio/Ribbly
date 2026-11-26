@@ -14,8 +14,9 @@ Derivado de la auditoría de seguridad del 28/09/2026 (`docs/Boxie-auditoria-seg
 - [ ] **P0.6 · Auditoría 17-18/11/2026: acciones fuera del código** (`docs/Ribbly-auditoria-seguridad-2026-11-17.md`)
   - [x] Supabase → "Confirm email" activado y "Allow new users to sign up" activado (18/11, verificado con captura).
   - [x] Migración `20261117120000_security_hardening.sql` aplicada en producción (18/11, verificada). Historial de migraciones alineado: se marcaron como aplicadas 7 migraciones que estaban en la base sin registrar, y se borraron del historial 1 registro duplicado de soporte y 5 filas con versión mal formada. `supabase db push` vuelve a funcionar ("Remote database is up to date").
-  - [ ] Vercel: `CRON_SECRET` (sin ella los recordatorios responden 503), confirmar `MP_WEBHOOK_SECRET` y `NEXT_PUBLIC_SENTRY_DSN`; redeploy.
-  - [ ] Revisar con qué se dispara `/api/cron/reminders` (no hay `crons` en `vercel.json`).
+  - [ ] Vercel: `CRON_SECRET` (sin ella los crons responden 503: verificado en producción el 26/11), confirmar `MP_WEBHOOK_SECRET` y `NEXT_PUBLIC_SENTRY_DSN`; redeploy.
+  - [x] Disparador de los crons: `vercel.json` tiene `/api/cron/reminders` (12:00 UTC) y `/api/cron/conciliar` (09:00 UTC).
+  - [ ] Supabase: aplicar `20261126120000_payment_reconcile_source.sql` (`npx supabase db push`) para la conciliación de pagos (P1.12).
 
 - [ ] **P0.8 · Repos públicos y Vercel conectado al repo nuevo** (detectado 25/11/2026)
   - **Qué pasa:** el proyecto se mudó a `Mana-Estudio/Ribbly`, que es **público**, y el viejo `Damsh-bit/Boxie` **también sigue público** (P0.4 figuraba hecho, pero la API de GitHub lo muestra visible sin login). No hay secretos en el historial (escaneado), pero quedan expuestos el código, los informes de seguridad con los pendientes y la estructura de la base.
@@ -65,6 +66,9 @@ Derivado de la auditoría de seguridad del 28/09/2026 (`docs/Boxie-auditoria-seg
 
 - [x] **P0.5 · Blindar script de creación de administradores [COMPLETADO]**
   - **Acción:** Argumentos `email` y `password` obligatorios, rechazo de credenciales demo, validación sintáctica de email, contraseña oculta en consola y mínimo 12 caracteres forzado en `scripts/create-admin.mjs`.
+
+- [x] **P1.12 · Conciliación de pagos sin webhook [CÓDIGO COMPLETADO · 26/11/2026]**
+  - `src/server/reconcile.ts`: busca órdenes de MP pendientes (de 15 min a 10 días), consulta `/v1/payments/search` por `external_reference` y aplica los pagos aprobados por `apply_payment` (idempotente, `source = 'reconcile'`). Corre en el cron diario `/api/cron/conciliar` y al pedir "recuperar acceso" en `/mi-ribbly`. Cada pago recuperado es un error en Sentry (el webhook está fallando). Tests en `tests/unit/reconcile.test.ts` y `tests/db/payments.test.ts`. Falta: `CRON_SECRET` en Vercel y aplicar la migración (P0.6). Con plan Pro, pasarlo a cada hora.
 
 - [x] **P1.1 · Webhook de Mercado Pago y Conciliación Automática [COMPLETADO]**
   - **Acción:** Webhook oficial implementado en `app/api/webhooks/mercadopago/route.ts` con validación HMAC SHA-256 (`x-signature` y `MP_WEBHOOK_SECRET`), consulta atómica a la API de MP y aplicación idempotente del pago.
@@ -119,8 +123,8 @@ Derivado de la auditoría de seguridad del 28/09/2026 (`docs/Boxie-auditoria-seg
   - Incorporar captcha invisible en formularios públicos (Soporte, Contacto y `/mi-boxie`).
 - [x] **P2.7 · Evitar DoS por rotación de tokens en Recuperar Acceso [COMPLETADO · 18/11/2026]**
   - Un link de edición mandado hace menos de 15 minutos no se vuelve a rotar.
-- [ ] **P2.8 · Paginación en lecturas de órdenes**
-  - Paginar la consulta `dataset()` en `src/server/admin/supabase-repo.ts` al superar las 1.000 ventas.
+- [x] **P2.8 · Paginación en lecturas de órdenes [COMPLETADO · 26/11/2026]**
+  - `dataset()` en `src/server/admin/supabase-repo.ts` lee ventas, Ribblys, estadísticas, cupones, afiliados, gastos y versiones con `selectAll` (`src/server/db/client.ts`): páginas de 1.000 con orden que termina en una columna única. Antes Supabase cortaba en 1.000 filas sin avisar. Tests en `tests/unit/select-all.test.ts`.
 - [ ] **P2.9 · GitHub: escaneo de secretos y alertas de dependencias**
   - Exigir pull requests choca con el flujo acordado (push directo a `main`). Lo que sí suma sin cambiar el flujo: _Settings → Code security_ → activar **Secret scanning + Push protection** y **Dependabot alerts / security updates**.
 - [x] **P2.10 · Protocolo contra ingeniería social en Soporte [COMPLETADO · 18/11/2026]**

@@ -57,6 +57,28 @@ export function unwrap<T>(result: Result<T>, what: string): NonNullable<T> {
   return result.data as NonNullable<T>
 }
 
+/** Tope de filas por respuesta de PostgREST (`max_rows` en supabase/config.toml). */
+export const PAGE_SIZE = 1000
+
+/**
+ * Lee una tabla entera de a páginas. PostgREST corta cada respuesta en
+ * `max_rows` sin avisar, así que un `select('*')` suelto devuelve las primeras
+ * 1.000 filas y nada más. `page` arma la consulta con `.range(from, to)`; tiene
+ * que llevar un orden que termine en una columna única, o las páginas se pisan.
+ */
+export async function selectAll<T>(
+  page: (from: number, to: number) => PromiseLike<Result<T[] | null>>,
+  what: string,
+  pageSize = PAGE_SIZE,
+): Promise<T[]> {
+  const rows: T[] = []
+  for (let from = 0; ; from += pageSize) {
+    const batch = unwrap(await page(from, from + pageSize - 1), what)
+    rows.push(...batch)
+    if (batch.length < pageSize) return rows
+  }
+}
+
 /** Para `.maybeSingle()`: null es un resultado válido (no existe). */
 export function unwrapMaybe<T>(result: Result<T>, what: string): T | null {
   if (result.error) throw new DbError(`${what}: ${result.error.message}`, result.error.code)

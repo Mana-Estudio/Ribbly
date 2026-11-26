@@ -139,6 +139,25 @@ export function getPayment(paymentId: string | number): Promise<MpPayment> {
   return mpFetch<MpPayment>(`/v1/payments/${id}`)
 }
 
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
+/**
+ * Pagos de una orden (por nuestro `external_reference`), del más viejo al más
+ * nuevo. Sirve para conciliar: encontrar un pago aprobado cuyo aviso nunca
+ * llegó. Se vuelve a filtrar por referencia: no se le cree a la búsqueda.
+ */
+export async function searchPaymentsByReference(orderId: string): Promise<MpPayment[]> {
+  if (!UUID.test(orderId)) throw new Error('Referencia de orden inválida')
+  const query = new URLSearchParams({
+    external_reference: orderId,
+    sort: 'date_created',
+    criteria: 'asc',
+    limit: '20',
+  })
+  const { results } = await mpFetch<{ results?: MpPayment[] }>(`/v1/payments/search?${query}`)
+  return (results ?? []).filter((payment) => payment.external_reference === orderId)
+}
+
 // ─── Verificación de Webhooks ────────────────────────────────────────────────
 
 export interface VerifySignatureParams {

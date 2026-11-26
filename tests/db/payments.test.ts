@@ -105,6 +105,35 @@ describe('apply_payment', () => {
     expect(count).toBe(1)
   })
 
+  it('la conciliación entrega un pago cuyo aviso no llegó, y el webhook tardío no duplica', async () => {
+    const orderId = await createOrder(db, seed)
+    const reconciled = await applyPayment(db, {
+      orderId,
+      paymentId: 'mp-late',
+      status: 'approved',
+      amount: 1500000,
+      source: 'reconcile',
+    })
+    const lateWebhook = await applyPayment(db, {
+      orderId,
+      paymentId: 'mp-late',
+      status: 'approved',
+      amount: 1500000,
+    })
+
+    expect(reconciled.outcome).toBe('paid')
+    expect(reconciled.created).toBe(true)
+    expect(lateWebhook).toEqual({
+      outcome: 'duplicate',
+      boxie_id: reconciled.boxie_id,
+      created: false,
+    })
+    const [event] = await db.query<{ source: string }>(
+      `select source from public.payment_events where provider_payment_id = 'mp-late'`,
+    )
+    expect(event?.source).toBe('reconcile')
+  })
+
   it('un pendiente seguido de un aprobado procesa ambos estados', async () => {
     const orderId = await createOrder(db, seed)
     const pending = await applyPayment(db, {

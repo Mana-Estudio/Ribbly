@@ -119,8 +119,8 @@ Derivado de la auditoría de seguridad del 28/09/2026 (`docs/Boxie-auditoria-seg
   - Incorporar captcha invisible en formularios públicos (Soporte, Contacto y `/mi-boxie`).
 - [x] **P2.7 · Evitar DoS por rotación de tokens en Recuperar Acceso [COMPLETADO · 18/11/2026]**
   - Un link de edición mandado hace menos de 15 minutos no se vuelve a rotar.
-- [ ] **P2.8 · Paginación en lecturas de órdenes**
-  - Paginar la consulta `dataset()` en `src/server/admin/supabase-repo.ts` al superar las 1.000 ventas.
+- [x] **P2.8 · Paginación en lecturas de órdenes [COMPLETADO · 26/11/2026]**
+  - `dataset()` en `src/server/admin/supabase-repo.ts` lee ventas, Ribblys, estadísticas, cupones, afiliados, gastos y versiones con `selectAll` (`src/server/db/client.ts`): páginas de 1.000 con orden que termina en una columna única. Antes Supabase cortaba en 1.000 filas sin avisar. Tests en `tests/unit/select-all.test.ts`.
 - [ ] **P2.9 · GitHub: escaneo de secretos y alertas de dependencias**
   - Exigir pull requests choca con el flujo acordado (push directo a `main`). Lo que sí suma sin cambiar el flujo: _Settings → Code security_ → activar **Secret scanning + Push protection** y **Dependabot alerts / security updates**.
 - [x] **P2.10 · Protocolo contra ingeniería social en Soporte [COMPLETADO · 18/11/2026]**

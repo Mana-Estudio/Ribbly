@@ -1,6 +1,7 @@
 'use client'
 
-import { motion, useReducedMotion } from 'framer-motion'
+import { motion } from 'framer-motion'
+import { useCalm } from '@/ui/motion'
 import { useMemo } from 'react'
 import type { IconName } from '@/domain/icons'
 import { Icon } from '@/ui/Icon'
@@ -43,7 +44,7 @@ export function FloatingParticles({
   /** Compatibilidad: las partículas flotan mientras la slide está montada. */
   active?: boolean
 }) {
-  const calm = useReducedMotion()
+  const calm = useCalm()
   const particles = useMemo(() => {
     const rand = seededRandom(seed * 7919 + type.length)
     return Array.from({ length: 15 }, () => {
@@ -125,7 +126,7 @@ export function ConfettiLayer({
   standalone?: boolean
   active?: boolean
 }) {
-  const calm = useReducedMotion()
+  const calm = useCalm()
   const pieces = useMemo(() => {
     const rand = seededRandom(seed)
     return Array.from({ length: 50 }, () => ({
@@ -188,7 +189,7 @@ export function GradientDrift({
   angle?: number
   duration?: number
 }) {
-  const calm = useReducedMotion()
+  const calm = useCalm()
   const start = 'translate(0%, -30%)'
   return (
     <div
@@ -220,7 +221,7 @@ export function GradientDrift({
 
 /** Mosaico de logos de Ribbly de fondo (trivia y cuponera), que deriva despacio en diagonal. */
 export function LogoPattern({ logoUrl, count = 60 }: { logoUrl: string; count?: number }) {
-  const calm = useReducedMotion()
+  const calm = useCalm()
   return (
     <motion.div
       className="bx-logo-pattern"

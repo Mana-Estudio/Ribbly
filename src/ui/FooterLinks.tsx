@@ -4,8 +4,7 @@ import { motion } from 'framer-motion'
 import Link from 'next/link'
 import type { Route } from 'next'
 import type { ReactNode } from 'react'
-import { Icon } from './Icon'
-import { spring, useCalm } from './motion'
+import { spring } from './motion'
 
 const MotionLink = motion.create(Link)
 
@@ -45,40 +44,5 @@ export function SocialButton({
     >
       {children}
     </motion.a>
-  )
-}
-
-/** El corazón de "Hecho con amor": late. */
-export function Heartbeat() {
-  const calm = useCalm()
-  return (
-    <motion.span
-      className="inline-block align-[-0.2em]"
-      aria-label="amor"
-      role="img"
-      animate={
-        calm
-          ? undefined
-          : {
-              transform: [
-                'scale(1)',
-                'scale(1.25)',
-                'scale(1)',
-                'scale(1.15)',
-                'scale(1)',
-                'scale(1)',
-              ],
-            }
-      }
-      // La pausa va dentro de los keyframes (no con repeatDelay) para que corra en el compositor.
-      transition={{
-        duration: 2,
-        times: [0, 0.12, 0.24, 0.36, 0.5, 1],
-        repeat: Infinity,
-        ease: 'easeInOut',
-      }}
-    >
-      <Icon name="corazon" size="1.2em" />
-    </motion.span>
   )
 }

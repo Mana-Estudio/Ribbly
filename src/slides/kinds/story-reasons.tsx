@@ -1,4 +1,5 @@
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
+import { useCalm } from '@/ui/motion'
 import { useEffect, useState } from 'react'
 import { EmojiText } from '@/ui/Icon'
 import { Appear, Loop, spring } from './motion'
@@ -14,7 +15,7 @@ export function StoryReasons({ theme, buyer, ctx }: Props<'story.reasons'>) {
   const own = buyer.reasons.map((r) => r.trim()).filter(Boolean)
   const reasons = own.length ? own : theme.suggestions.filter(Boolean)
   const activated = useActivated(ctx.active)
-  const calm = useReducedMotion()
+  const calm = useCalm()
 
   const [state, setState] = useState({
     signature: '',

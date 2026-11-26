@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from 'react'
 import { ButtonLink } from '@/ui/Button'
 import { spring } from '@/ui/motion'
 import { useBottomBar } from '@/ui/use-bottom-bar'
+import { type PriceTag, usePriceText } from '@/ui/currency/CurrencyContext'
 
 /**
  * Barra de compra fija en el celular: aparece cuando el armador de la portada
@@ -18,13 +19,14 @@ export function StickyBuyBar({
   salesPaused = false,
   editorHref,
 }: {
-  /** "Desde $ 3.490" o "$ 4.990". */
-  price: string
+  /** Sin formatear: se muestra en la moneda elegida ("Desde …" con planes). */
+  price: PriceTag
   /** Con las ventas pausadas desde el panel, invita a probar el editor. */
   salesPaused?: boolean
   editorHref: Route
 }) {
   const [show, setShow] = useState(false)
+  const priceText = usePriceText()
   const bar = useRef<HTMLDivElement>(null)
   useBottomBar(bar, show)
 
@@ -69,7 +71,7 @@ export function StickyBuyBar({
                 {salesPaused ? 'Ventas pausadas por un rato' : 'Regalo digital · llega al instante'}
               </p>
               <p className="truncate font-display text-xl font-bold text-ink">
-                {salesPaused ? 'Probala gratis' : price}
+                {salesPaused ? 'Probala gratis' : priceText(price)}
               </p>
             </div>
             {salesPaused ? (

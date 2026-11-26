@@ -1,4 +1,5 @@
-import { motion, useReducedMotion } from 'framer-motion'
+import { motion } from 'framer-motion'
+import { useCalm } from '@/ui/motion'
 import { Emoji, EmojiText } from '@/ui/Icon'
 import { Appear, frames, Loop, Pop } from './motion'
 import type { Props } from './shared'
@@ -13,7 +14,7 @@ const SHAPES = [
 
 export function ConnectorGamer({ theme, ctx }: Props<'connector.gamer'>) {
   const active = ctx.active
-  const calm = useReducedMotion()
+  const calm = useCalm()
   return (
     <div
       style={{

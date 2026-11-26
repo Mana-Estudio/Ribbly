@@ -36,9 +36,9 @@ describe('Content-Security-Policy', () => {
     expect(connect).not.toContain('*')
   })
 
-  it('solo embebe YouTube', () => {
+  it('solo embebe YouTube y el botón de Google', () => {
     expect(directive(prod, 'frame-src')).toBe(
-      'frame-src https://www.youtube-nocookie.com https://www.youtube.com',
+      'frame-src https://www.youtube-nocookie.com https://www.youtube.com https://accounts.google.com/gsi/',
     )
   })
 

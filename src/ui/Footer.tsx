@@ -4,7 +4,8 @@ import type { Route } from 'next'
 import { legalDocs } from '@/content/legal'
 import { site } from '@/content/site'
 import type { BusinessContact } from '@/domain/business'
-import { FooterLink, Heartbeat, SocialButton } from './FooterLinks'
+import { FirmaMana } from './FirmaMana'
+import { FooterLink, SocialButton } from './FooterLinks'
 import { Stagger, StaggerItem } from './motion'
 import { SocialIcon, type SocialNetwork } from './SocialIcon'
 
@@ -171,13 +172,16 @@ export function Footer({ contact }: { contact: BusinessContact }) {
         </StaggerItem>
       </Stagger>
 
-      <div className="flex w-full flex-col items-center justify-between gap-2 border-t border-white/5 bg-night-deep px-5 py-5 text-center text-sm text-neutral-500 md:flex-row">
-        <p>
+      {/*
+        Deja lugar a lo que flota abajo para que no tape la fila: el botón de ayuda
+        a la izquierda (px-20 / md:pl-24) y las barras fijas del celular y el aviso
+        de demo por debajo (--bar, --dock).
+      */}
+      <div className="flex w-full flex-col items-center justify-between gap-3 border-t border-white/5 bg-night-deep px-20 pt-5 pb-[calc(1.25rem+var(--dock,0px)+var(--bar,0px))] text-center text-sm text-neutral-500 md:flex-row md:pr-8 md:pl-24">
+        <p className="text-balance">
           © {new Date().getFullYear()} {contact.name}. Todos los derechos reservados.
         </p>
-        <p className="text-neutral-400">
-          Hecho con <Heartbeat /> en Argentina
-        </p>
+        <FirmaMana />
       </div>
     </footer>
   )

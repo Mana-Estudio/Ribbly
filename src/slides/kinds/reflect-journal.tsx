@@ -1,4 +1,5 @@
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
+import { useCalm } from '@/ui/motion'
 import { useMemo, useState } from 'react'
 import { Emoji, EmojiText } from '@/ui/Icon'
 import { seededRandom } from '../player/effects'
@@ -18,7 +19,7 @@ export function ReflectJournal({ theme, ctx }: Props<'reflect.journal'>) {
   const [view, setView] = useState<View>('intro')
   const [entry, setEntry] = useState('')
   const introStep = useSequence(ctx.active && view === 'intro', [1500, 4000])
-  const calm = useReducedMotion()
+  const calm = useCalm()
   const canSave = entry.trim().length > 5
 
   const bubbles = useMemo(() => {

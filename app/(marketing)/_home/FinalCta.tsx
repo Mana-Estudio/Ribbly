@@ -9,6 +9,7 @@ import { ConfettiBurst } from '@/ui/ConfettiBurst'
 import { EmojiText, Icon } from '@/ui/Icon'
 import { Float, Reveal, spring, useCalm } from '@/ui/motion'
 import { Magnetic, Mark } from './primitives'
+import { useCurrency } from '@/ui/currency/CurrencyContext'
 
 const HEARTS = [
   { x: -54, size: 20, delay: 0 },
@@ -20,7 +21,8 @@ const HEARTS = [
 ]
 
 /** El cierre: una caja de regalo que se abre al tocarla (con confeti) y el último llamado. */
-export function FinalCta({ price, editorHref }: { price: string; editorHref: Route }) {
+export function FinalCta({ priceCents, editorHref }: { priceCents: number; editorHref: Route }) {
+  const { formatPrice } = useCurrency()
   const [open, setOpen] = useState(false)
   const [bursts, setBursts] = useState(0)
 
@@ -66,8 +68,8 @@ export function FinalCta({ price, editorHref }: { price: string; editorHref: Rou
               Un regalo que se abre <Mark>con el corazón</Mark>
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-lg text-white/70 lg:mx-0">
-              Elegí la temática, personalizala en 5 minutos y mandala por WhatsApp. Desde {price},
-              llega al instante esté donde esté.
+              Elegí la temática, personalizala en 5 minutos y mandala por WhatsApp. Desde{' '}
+              {formatPrice(priceCents)}, llega al instante esté donde esté.
             </p>
             <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center lg:justify-start">
               <Magnetic className="w-full sm:w-auto">

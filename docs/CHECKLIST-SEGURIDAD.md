@@ -17,7 +17,13 @@ Derivado de la auditoría de seguridad del 28/09/2026 (`docs/Boxie-auditoria-seg
   - [ ] Vercel: `CRON_SECRET` (sin ella los recordatorios responden 503), confirmar `MP_WEBHOOK_SECRET` y `NEXT_PUBLIC_SENTRY_DSN`; redeploy.
   - [ ] Revisar con qué se dispara `/api/cron/reminders` (no hay `crons` en `vercel.json`).
 
-- [ ] **P0.7 · Entorno de desarrollo separado de producción**
+- [ ] **P0.8 · Repos públicos y Vercel conectado al repo nuevo** (detectado 25/11/2026)
+  - **Qué pasa:** el proyecto se mudó a `Mana-Estudio/Ribbly`, que es **público**, y el viejo `Damsh-bit/Boxie` **también sigue público** (P0.4 figuraba hecho, pero la API de GitHub lo muestra visible sin login). No hay secretos en el historial (escaneado), pero quedan expuestos el código, los informes de seguridad con los pendientes y la estructura de la base.
+  - **Acción:**
+    1. `Mana-Estudio/Ribbly` → _Settings → Danger Zone → Change visibility → Private_ (lo hace un admin de la organización).
+    2. `Damsh-bit/Boxie` → pasarlo a privado o archivarlo/borrarlo, para que nadie siga trabajando ahí y no queden dos copias.
+    3. Vercel → _Settings → Git_: conectar el proyecto a `Mana-Estudio/Ribbly` (si sigue en `Damsh-bit/Boxie`, lo que se pushea al repo nuevo no se despliega).
+
   - **Por qué:** `.env.local` usa la base de producción y el token real de Mercado Pago: una prueba de compra en local cobra de verdad y escribe en la base real, y una laptop comprometida da acceso total a producción.
   - **Acción:** crear un vendedor y un comprador de prueba en Mercado Pago (_Tus integraciones → Cuentas de prueba_) y un proyecto (o branch) de Supabase para desarrollo; poner esas credenciales en `.env.local` y dejar las de producción solo en Vercel.
 
@@ -34,7 +40,7 @@ Derivado de la auditoría de seguridad del 28/09/2026 (`docs/Boxie-auditoria-seg
     2. Asegurarse de que `TOKEN_ENCRYPTION_KEY` en Vercel coincida con la clave usada para cifrar los secretos en la base de datos (2FA, gift tokens).
     3. Hacer redeploy en Vercel para que las variables entren en vigencia e invaliden sesiones residuales.
 
-- [x] **P0.4 · Pasar repositorios a Privados y revocar token MP**
+- [ ] **P0.4 · Pasar repositorios a Privados y revocar token MP** (reabierto 25/11: ver P0.8)
   - **Dónde:** GitHub y Mercado Pago Developers.
   - **Acción:**
     1. En Mercado Pago Developers (_Tus integraciones → Credenciales_), confirmar que cualquier token expuesto previamente esté revocado y reemplazado por credenciales de producción.
@@ -73,7 +79,7 @@ Derivado de la auditoría de seguridad del 28/09/2026 (`docs/Boxie-auditoria-seg
   - **Acción:** 2FA TOTP blindado con secretos cifrados AES-256-GCM en base de datos, 8 códigos de respaldo con quema de un solo uso, tolerancia horaria de ±90s, retención de preAuthToken y pantalla `/admin/seguridad` para cambio de clave con feedback visual.
 
 - [x] **P1.5 · Configurar envío de Mails en Producción (Resend) [COMPLETADO / VERIFICADO]**
-  - **Acción:** Dominio `ribbly.com.ar` configurado y verificado en Resend con registros DNS (SPF, DKIM, DMARC). Remitente activo `Ribbly <regalos@ribbly.com.ar>`, reply-to `soporte@ribbly.com.ar` y prueba de envío exitosa realizada a `santiago.n.almiron@gmail.com` (ID: `01a0fd11-1985-7149-bbfc-68205c9bc17f`).
+  - **Acción:** Dominio `ribbly.com.ar` configurado y verificado en Resend con registros DNS (SPF, DKIM, DMARC). Remitente activo `Ribbly <regalos@ribbly.com.ar>`, reply-to `soporte@ribbly.com.ar` y prueba de envío exitosa realizada a la casilla de uno de los dueños (ID: `01a0fd11-1985-7149-bbfc-68205c9bc17f`).
 
 ---
 

@@ -2,6 +2,7 @@ import type { Metadata, Route } from 'next'
 import { redirect } from 'next/navigation'
 import { getCustomerSession } from '@/server/customer/session'
 import { CustomerLoginScreen } from './CustomerLoginScreen'
+import { safeNextPath } from './safe-next'
 
 export const metadata: Metadata = {
   title: 'Iniciar Sesión · Mi Cuenta Ribbly',
@@ -16,7 +17,8 @@ export default async function CustomerLoginPage(props: {
   const next = typeof searchParams.next === 'string' ? searchParams.next : '/cuenta'
 
   if (session) {
-    redirect((next.startsWith('/') ? next : '/cuenta') as Route)
+    // `//otro-sitio.com` también empieza con "/": sería una redirección afuera.
+    redirect(safeNextPath(next) as Route)
   }
 
   return <CustomerLoginScreen nextUrl={next} />

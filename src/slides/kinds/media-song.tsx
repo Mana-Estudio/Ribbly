@@ -1,4 +1,5 @@
-import { motion, useReducedMotion } from 'framer-motion'
+import { motion } from 'framer-motion'
+import { useCalm } from '@/ui/motion'
 import { EmojiText } from '@/ui/Icon'
 import { youtubeId } from '../fields'
 import { Appear, ease } from './motion'
@@ -6,7 +7,7 @@ import type { Props } from './shared'
 
 /** Tres barritas de ecualizador que bailan mientras suena la canción. */
 function Equalizer({ active }: { active: boolean }) {
-  const calm = useReducedMotion()
+  const calm = useCalm()
   const run = active && !calm
   return (
     <span

@@ -13,6 +13,7 @@ import { Emoji, EmojiText, Icon } from '@/ui/Icon'
 import { Swap, ease, spring } from '@/ui/motion'
 import { Mark, SectionHeading, useTilt } from './primitives'
 import type { HomeTheme } from './theme-look'
+import { usePriceText } from '@/ui/currency/CurrencyContext'
 
 const MotionLink = motion.create(Link)
 
@@ -298,6 +299,7 @@ function ThemeTile({
   dimmed: boolean
 }) {
   const tilt = useTilt(7)
+  const priceText = usePriceText()
   const light = theme.tone === 'light'
   const recommended = occasion?.theme === theme.slug
 
@@ -313,7 +315,7 @@ function ThemeTile({
     >
       <MotionLink
         href={`/tematicas/${theme.slug}` as Route}
-        aria-label={`Ribbly de ${theme.name}: ${theme.priceLabel}`}
+        aria-label={`Ribbly de ${theme.name}: ${priceText(theme.price)}`}
         className="group relative flex w-[min(292px,calc(100vw-3.5rem))] flex-col overflow-hidden rounded-[28px] border-2 shadow-[0_10px_30px_rgba(42,36,51,0.12)] transition-shadow duration-300 hover:shadow-[0_32px_70px_rgba(42,36,51,0.25)] sm:w-[312px]"
         style={{ backgroundColor: theme.color, borderColor: theme.color, ...tilt.style }}
         {...tilt.handlers}
@@ -342,7 +344,7 @@ function ThemeTile({
           <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/35 to-transparent" />
 
           <span className="absolute bottom-3 left-4 rounded-full bg-white px-3 py-1 font-display text-lg font-bold text-ink shadow-md">
-            {theme.priceLabel}
+            {priceText(theme.price)}
           </span>
 
           <motion.span

@@ -57,7 +57,9 @@ export function formatUSD(usdCents: Cents): string {
 export function arsToUsdCents(arsCents: Cents, exchangeRate: number): Cents {
   if (!exchangeRate || exchangeRate <= 0) return 0
   // arsCents / 100 = pesos; pesos / exchangeRate = usd; usd * 100 = usdCents
-  return Math.round(arsCents / exchangeRate)
+  const usdCents = Math.round(arsCents / exchangeRate)
+  // Algo que cuesta plata nunca se muestra como "US$ 0": como mínimo, un centavo.
+  return arsCents > 0 ? Math.max(1, usdCents) : usdCents
 }
 
 /**

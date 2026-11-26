@@ -143,6 +143,28 @@ export function useCurrency(): CurrencyContextValue {
 }
 
 /**
+ * Un precio que todavía no se formateó: la página (servidor) manda los
+ * centavos y el componente lo muestra en la moneda elegida en el navbar. Si
+ * el servidor mandara el texto ya armado ("$ 4.990"), cambiar a USD no haría
+ * nada.
+ */
+export interface PriceTag {
+  cents: Cents
+  /** Con planes se anuncia "Desde …" (el plan más barato). */
+  from: boolean
+}
+
+/** `priceText(tag)` → "Desde US$ 3" / "$ 4.990", según la moneda elegida. */
+export function usePriceText() {
+  const { formatPrice } = useCurrency()
+  return useCallback(
+    (tag: PriceTag, opts: { lower?: boolean } = {}) =>
+      `${tag.from ? (opts.lower ? 'desde ' : 'Desde ') : ''}${formatPrice(tag.cents)}`,
+    [formatPrice],
+  )
+}
+
+/**
  * Toggle visual y accesible para alternar entre ARS y USD.
  */
 export function CurrencyToggle({

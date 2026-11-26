@@ -198,7 +198,6 @@ export default async function HomePage() {
   const showcase = buildShowcase(configs)
   const homeOccasions = occasionsOf(sf.themes)
   const byPlans = sf.plans.length > 1
-  const price = formatARS(sf.priceFromCents)
   const sample = sf.themes[0]
   const exampleHref = `/ejemplo/${sample?.slug ?? 'pareja'}` as Route
   const editorHref = `/ejemplo/${sample?.slug ?? 'pareja'}/personalizar` as Route
@@ -206,7 +205,6 @@ export default async function HomePage() {
 
   const homeThemes: HomeTheme[] = sf.themes.map((t) => {
     // Con planes, cada temática se vende desde el plan más barato.
-    const themePrice = formatARS(byPlans ? sf.priceFromCents : t.priceCents)
     return {
       slug: t.slug,
       name: t.name,
@@ -216,8 +214,8 @@ export default async function HomePage() {
       images: t.listing.images,
       features: t.listing.features,
       emoji: themeEmoji(t.slug, t.listing.guide?.emoji),
-      price: themePrice,
-      priceLabel: byPlans ? `Desde ${themePrice}` : themePrice,
+      // Sin formatear: lo muestra cada componente en la moneda elegida (ARS/USD).
+      price: { cents: byPlans ? sf.priceFromCents : t.priceCents, from: byPlans },
     }
   })
 
@@ -260,7 +258,7 @@ export default async function HomePage() {
         fromPlan={fromPlan}
       />
       <HowItWorks
-        price={byPlans ? `desde ${price}` : price}
+        price={{ cents: sf.priceFromCents, from: byPlans }}
         editorHref={editorHref}
         exampleHref={exampleHref}
         sample={{
@@ -324,9 +322,9 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <FinalCta price={price} editorHref={editorHref} />
+      <FinalCta priceCents={sf.priceFromCents} editorHref={editorHref} />
       <StickyBuyBar
-        price={byPlans ? `Desde ${price}` : price}
+        price={{ cents: sf.priceFromCents, from: byPlans }}
         salesPaused={sf.salesPaused}
         editorHref={editorHref}
       />

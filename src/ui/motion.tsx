@@ -5,12 +5,11 @@ import {
   motion,
   MotionConfig,
   useIsPresent,
-  useReducedMotion,
   type HTMLMotionProps,
   type Transition,
 } from 'framer-motion'
 import { LoaderCircle } from 'lucide-react'
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from 'react'
 import { cn } from './cn'
 
 /**
@@ -60,9 +59,27 @@ export function MotionProvider({ children }: { children: ReactNode }) {
   )
 }
 
-/** true si el sistema pide menos movimiento: los loops decorativos no se animan. */
+const REDUCED_MOTION = '(prefers-reduced-motion: reduce)'
+
+function subscribeReducedMotion(onChange: () => void) {
+  const query = matchMedia(REDUCED_MOTION)
+  query.addEventListener('change', onChange)
+  return () => query.removeEventListener('change', onChange)
+}
+
+/**
+ * true si el sistema pide menos movimiento: los loops decorativos no se animan.
+ * En el servidor y al hidratar vale false (el servidor no conoce la preferencia);
+ * recién después React lo pasa al valor real. `useReducedMotion` de framer ya
+ * lo lee en el primer render del cliente, y si un componente decide qué dibujar
+ * con eso, el HTML no coincide con el del servidor (error de hidratación).
+ */
 export function useCalm(): boolean {
-  return useReducedMotion() ?? false
+  return useSyncExternalStore(
+    subscribeReducedMotion,
+    () => matchMedia(REDUCED_MOTION).matches,
+    () => false,
+  )
 }
 
 /**

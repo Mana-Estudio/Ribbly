@@ -4,6 +4,7 @@ import type { Route } from 'next'
 import { legalDocs } from '@/content/legal'
 import { site } from '@/content/site'
 import type { BusinessContact } from '@/domain/business'
+import { FirmaMana } from './FirmaMana'
 import { FooterLink, Heartbeat, SocialButton } from './FooterLinks'
 import { Stagger, StaggerItem } from './motion'
 import { SocialIcon, type SocialNetwork } from './SocialIcon'
@@ -171,13 +172,20 @@ export function Footer({ contact }: { contact: BusinessContact }) {
         </StaggerItem>
       </Stagger>
 
-      <div className="flex w-full flex-col items-center justify-between gap-2 border-t border-white/5 bg-night-deep px-5 py-5 text-center text-sm text-neutral-500 md:flex-row">
+      {/* Abajo deja lugar a las barras fijas (comprar en el celular, aviso de demo) para que no tapen la fila. */}
+      <div className="flex w-full flex-col items-center justify-between gap-2 border-t border-white/5 bg-night-deep px-5 pt-5 pb-[calc(1.25rem+var(--dock,0px)+var(--bar,0px))] text-center text-sm text-neutral-500 md:flex-row">
         <p>
           © {new Date().getFullYear()} {contact.name}. Todos los derechos reservados.
         </p>
-        <p className="text-neutral-400">
-          Hecho con <Heartbeat /> en Argentina
-        </p>
+        <div className="flex flex-col items-center gap-x-3 gap-y-2 text-neutral-400 sm:flex-row">
+          <p>
+            Hecho con <Heartbeat /> en Argentina
+          </p>
+          <span aria-hidden className="hidden text-neutral-600 sm:inline">
+            ·
+          </span>
+          <FirmaMana />
+        </div>
       </div>
     </footer>
   )

@@ -19,9 +19,10 @@ const securityHeaders = [
     value: 'camera=(), microphone=(), geolocation=(), payment=(), usb=(), browsing-topics=()',
   },
   { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains; preload' },
-  // Aísla la pestaña de las ventanas que abre o que la abren (tabnabbing, fugas
-  // entre sitios). Google y Mercado Pago van por redirección, no por popup.
-  { key: 'Cross-Origin-Opener-Policy', value: 'same-origin' },
+  // Aísla la pestaña de las ventanas que la abren (tabnabbing, fugas entre
+  // sitios). `allow-popups`: el botón de Google abre un popup que tiene que
+  // poder avisarle a esta pestaña cuando termina el login.
+  { key: 'Cross-Origin-Opener-Policy', value: 'same-origin-allow-popups' },
 ]
 
 // En /g/<token> y /editor/<token> el token es la credencial: que no viaje en

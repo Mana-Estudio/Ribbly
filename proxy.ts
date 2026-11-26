@@ -39,7 +39,8 @@ export function buildCsp(nonce: string, opts: { dev: boolean; https: boolean }):
       ...(opts.dev ? ["'unsafe-eval'"] : []),
     ],
     // framer-motion y Next escriben estilos en línea (atributo style).
-    'style-src': ["'self'", "'unsafe-inline'"],
+    // + el CSS del botón de Google (Google Identity Services).
+    'style-src': ["'self'", "'unsafe-inline'", 'https://accounts.google.com/gsi/style'],
     'img-src': [
       "'self'",
       'data:',
@@ -58,9 +59,15 @@ export function buildCsp(nonce: string, opts: { dev: boolean; https: boolean }):
       ...(supabaseWs ? [supabaseWs] : []),
       'https://www.facebook.com',
       'https://connect.facebook.net',
+      // Login de clientes con el botón de Google (FedCM / Google Identity Services).
+      'https://accounts.google.com/gsi/',
       ...(opts.dev ? ['ws:', 'wss:'] : []),
     ],
-    'frame-src': ['https://www.youtube-nocookie.com', 'https://www.youtube.com'],
+    'frame-src': [
+      'https://www.youtube-nocookie.com',
+      'https://www.youtube.com',
+      'https://accounts.google.com/gsi/',
+    ],
     'worker-src': ["'self'", 'blob:'],
     'manifest-src': ["'self'"],
     'object-src': ["'none'"],

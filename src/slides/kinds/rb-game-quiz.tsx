@@ -1,4 +1,5 @@
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
+import { useCalm } from '@/ui/motion'
 import { Check, Lightbulb, X } from 'lucide-react'
 import { useState } from 'react'
 import { EmojiText, Icon } from '@/ui/Icon'
@@ -49,7 +50,7 @@ export interface QuizResult {
  * de quien regala (o las de ejemplo de la temática).
  */
 export function GameQuiz({ theme, buyer, ctx }: Props<'game.quiz'>) {
-  const calm = useReducedMotion()
+  const calm = useCalm()
   const pareja = theme.look === 'pareja'
   const look = LOOK[pareja ? 'pareja' : 'cumple']
   const palette = useRbPalette()

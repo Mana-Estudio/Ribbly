@@ -1,4 +1,5 @@
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
+import { useCalm } from '@/ui/motion'
 import { useEffect, useRef, useState } from 'react'
 import { Emoji, EmojiText } from '@/ui/Icon'
 import { RichText } from '../RichText'
@@ -15,7 +16,7 @@ const COINS = [
 
 export function GameJackpot({ theme, ctx }: Props<'game.jackpot'>) {
   const active = ctx.active
-  const calm = useReducedMotion()
+  const calm = useCalm()
   const [spinning, setSpinning] = useState(false)
   const [stopped, setStopped] = useState([true, true, true])
   const [won, setWon] = useState(false)

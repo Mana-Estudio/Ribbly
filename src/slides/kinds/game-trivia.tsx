@@ -1,4 +1,5 @@
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
+import { useCalm } from '@/ui/motion'
 import { Camera, CircleAlert } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { Emoji, EmojiText, Icon } from '@/ui/Icon'
@@ -17,7 +18,7 @@ const view = {
 
 export function GameTrivia({ theme, ctx }: Props<'game.trivia'>) {
   const questions = theme.questions.filter((q) => q.question && q.options.length >= 2)
-  const calm = useReducedMotion()
+  const calm = useCalm()
   const [current, setView] = useState<View>('intro')
   const [qIndex, setQIndex] = useState(0)
   const [selected, setSelected] = useState<number | null>(null)

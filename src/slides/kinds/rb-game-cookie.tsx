@@ -1,4 +1,5 @@
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
+import { useCalm } from '@/ui/motion'
 import { useState } from 'react'
 import { Icon } from '@/ui/Icon'
 import { Burst, Constellation, Cookie, Moon, Stars } from '../ribbly/art'
@@ -15,7 +16,7 @@ const GOLD = ['#FFC56E', '#FFE8C8', '#FFFFFF', '#F7798A']
  */
 export function GameCookie({ theme, buyer, ctx }: Props<'game.cookie'>) {
   const active = ctx.active
-  const calm = useReducedMotion()
+  const calm = useCalm()
   const [picked, setPicked] = useState<number | null>(null)
   const [saving, setSaving] = useState(false)
   if (!active && picked !== null) setPicked(null)

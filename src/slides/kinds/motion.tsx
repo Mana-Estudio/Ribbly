@@ -1,6 +1,7 @@
 'use client'
 
-import { motion, useReducedMotion, type HTMLMotionProps, type Transition } from 'framer-motion'
+import { motion, type HTMLMotionProps, type Transition } from 'framer-motion'
+import { useCalm } from '@/ui/motion'
 import { ease, spring } from '../player/motion'
 import type { Cue } from '../player/sound'
 import { useCue } from '../player/use-sound'
@@ -119,7 +120,7 @@ export function Loop({
   easing?: Transition['ease']
 }) {
   const Component = tags[as] as typeof motion.div
-  const calm = useReducedMotion()
+  const calm = useCalm()
   const run = active && !calm
   return (
     <Component

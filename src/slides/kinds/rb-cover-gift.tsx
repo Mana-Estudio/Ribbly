@@ -1,4 +1,5 @@
-import { motion, useReducedMotion } from 'framer-motion'
+import { motion } from 'framer-motion'
+import { useCalm } from '@/ui/motion'
 import { useState } from 'react'
 import { Bokeh, Bow, Burst, Heart, ROSE } from '../ribbly/art'
 import { Btn, editable, piece, Stage, T, TapMark, u } from '../ribbly/ui'
@@ -19,7 +20,7 @@ function nameSize(name: string): number {
  */
 export function CoverGift({ theme, ctx }: Props<'cover.gift'>) {
   const active = ctx.active
-  const calm = useReducedMotion()
+  const calm = useCalm()
   const [open, setOpen] = useState(false)
   // Al volver a la portada, la caja está cerrada de nuevo.
   if (!active && open) setOpen(false)

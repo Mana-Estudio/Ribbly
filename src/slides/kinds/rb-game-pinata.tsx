@@ -1,4 +1,5 @@
-import { AnimatePresence, motion, useAnimationControls, useReducedMotion } from 'framer-motion'
+import { AnimatePresence, motion, useAnimationControls } from 'framer-motion'
+import { useCalm } from '@/ui/motion'
 import { useState } from 'react'
 import { Icon } from '@/ui/Icon'
 import { useCue, useSound } from '../player/use-sound'
@@ -86,7 +87,7 @@ function PinataStar({
  */
 export function GamePinata({ theme, buyer, ctx }: Props<'game.pinata'>) {
   const active = ctx.active
-  const calm = useReducedMotion()
+  const calm = useCalm()
   const swing = useAnimationControls()
   const [hits, setHits] = useState(0)
   const [saving, setSaving] = useState(false)

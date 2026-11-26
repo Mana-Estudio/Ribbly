@@ -1,4 +1,5 @@
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
+import { useCalm } from '@/ui/motion'
 import { useState } from 'react'
 import { Emoji, EmojiText } from '@/ui/Icon'
 import { useCue, useSound } from '../player/use-sound'
@@ -26,7 +27,7 @@ const SYMBOL_SETS: Record<string, { symbols: string[]; win: string }> = {
  */
 export function GameSlots({ theme, buyer, ctx }: Props<'game.slots'>) {
   const active = ctx.active
-  const calm = useReducedMotion()
+  const calm = useCalm()
   const [phase, setPhase] = useState<Phase>('ready')
   const [stopped, setStopped] = useState(0)
 

@@ -1,6 +1,7 @@
 'use client'
 
-import { motion, useReducedMotion } from 'framer-motion'
+import { motion } from 'framer-motion'
+import { useCalm } from '@/ui/motion'
 import type { CSSProperties, ReactNode } from 'react'
 import { CAKE_CANDLES, CAKE_FLAVORS } from './piece-options'
 
@@ -373,7 +374,7 @@ export function Cake({
   candles?: string
   style?: CSSProperties
 }) {
-  const calm = useReducedMotion() ?? false
+  const calm = useCalm()
   const kind: Flavor = (CAKE_FLAVORS.find(([v]) => v === flavor)?.[0] ?? 'original') as Flavor
   const candleKind = (CAKE_CANDLES.find(([v]) => v === candleStyle)?.[0] ??
     'original') as CandleStyle

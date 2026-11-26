@@ -1,6 +1,7 @@
 'use client'
 
-import { motion, useReducedMotion } from 'framer-motion'
+import { motion } from 'framer-motion'
+import { useCalm } from '@/ui/motion'
 import { useMemo, type CSSProperties } from 'react'
 import { seededRandom } from '../player/effects'
 import type { Cue } from '../player/sound'
@@ -86,7 +87,7 @@ export function Burst({
   /** Cómo suena al estallar (`null`: en silencio, porque ya suena lo que lo causó). */
   cue?: Cue | null
 }) {
-  const calm = useReducedMotion()
+  const calm = useCalm()
   const party = usePartyColors(colors)
   useCue(true, cue, 0, { gain: Math.min(1.1, 0.55 + power * 0.4) })
   const pieces = useMemo(() => {

@@ -1,4 +1,5 @@
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
+import { useCalm } from '@/ui/motion'
 import { Bookmark } from 'lucide-react'
 import { useState } from 'react'
 import { Icon } from '@/ui/Icon'
@@ -87,7 +88,7 @@ function Letter({
  */
 export function StoryCard({ theme, buyer, ctx }: Props<'story.card'>) {
   const active = ctx.active
-  const calm = useReducedMotion()
+  const calm = useCalm()
   const palette = useRbPalette()
   const pareja = theme.look === 'pareja'
   const [open, setOpen] = useState(false)

@@ -1,4 +1,5 @@
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
+import { useCalm } from '@/ui/motion'
 import { useState } from 'react'
 import { Emoji, EmojiText } from '@/ui/Icon'
 import { useCue, useSound } from '../player/use-sound'
@@ -27,7 +28,7 @@ const VOUCHER_TONES: Record<string, string[]> = {
  */
 export function GameVouchers({ theme, buyer, ctx }: Props<'game.vouchers'>) {
   const active = ctx.active
-  const calm = useReducedMotion()
+  const calm = useCalm()
   const mine = buyer.vouchers.filter((v) => v.title.trim())
   const styles = theme.examples
   const palette = useRbPalette()

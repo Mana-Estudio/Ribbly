@@ -1,4 +1,5 @@
-import { motion, useReducedMotion } from 'framer-motion'
+import { motion } from 'framer-motion'
+import { useCalm } from '@/ui/motion'
 import { EmojiText } from '@/ui/Icon'
 import { RichText } from '../RichText'
 import { Appear, Pop } from './motion'
@@ -14,7 +15,7 @@ const CANDLES = [
 
 export function CoverBirthday({ theme, ctx }: Props<'cover.birthday'>) {
   const active = ctx.active
-  const calm = useReducedMotion()
+  const calm = useCalm()
   const flicker = active && !calm
   return (
     <div

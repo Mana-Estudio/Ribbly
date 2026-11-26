@@ -1,4 +1,5 @@
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
+import { useCalm } from '@/ui/motion'
 import { useEffect, useState } from 'react'
 import { EmojiText } from '@/ui/Icon'
 import { useCue } from '../player/use-sound'
@@ -99,7 +100,7 @@ function Fireworks({ active }: { active: boolean }) {
  */
 export function OutroFinale({ theme, buyer, ctx }: Props<'outro.finale'>) {
   const active = ctx.active
-  const calm = useReducedMotion()
+  const calm = useCalm()
   const gift = buyer.gift.trim()
   const [step, setStep] = useState<Step>(gift ? 'box' : 'finale')
   // Si se carga (o se saca) el regalo en el editor, la pantalla acompaña.

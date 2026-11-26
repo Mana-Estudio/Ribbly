@@ -11,6 +11,7 @@ import { isStructural, planContents } from '@/slides/plans'
 import { slideDefinitions } from '@/slides/schemas'
 import { getStorefront, type Storefront } from '@/server/storefront'
 import { ButtonLink } from '@/ui/Button'
+import { Money } from '@/ui/currency/Money'
 import { Reveal } from '@/ui/motion'
 import { SponsorBand } from '@/ui/sponsors/SponsorUnits'
 import { PageIntro } from '../_components/PageIntro'
@@ -232,9 +233,17 @@ export default async function PricingPage({ searchParams }: PageProps<'/precios'
           </>
         }
         text={
-          tiered
-            ? `Elegí la temática y lo que querés que traiga: te decimos en qué plan entra y cuánto sale. Un solo pago, desde ${formatARS(sf.priceFromCents)}.`
-            : `Un solo pago de ${formatARS(sf.priceFromCents)}, todo incluido, en cualquier temática.`
+          tiered ? (
+            <>
+              Elegí la temática y lo que querés que traiga: te decimos en qué plan entra y cuánto
+              sale. Un solo pago, desde <Money cents={sf.priceFromCents} />.
+            </>
+          ) : (
+            <>
+              Un solo pago de <Money cents={sf.priceFromCents} />, todo incluido, en cualquier
+              temática.
+            </>
+          )
         }
       />
 
@@ -254,7 +263,9 @@ export default async function PricingPage({ searchParams }: PageProps<'/precios'
         </section>
       ) : (
         <Reveal className="mx-auto max-w-md rounded-[30px] bg-white p-8 text-center ring-1 ring-black/5">
-          <p className="font-display text-5xl font-bold text-ink">{formatARS(sf.priceFromCents)}</p>
+          <p className="font-display text-5xl font-bold text-ink">
+            <Money cents={sf.priceFromCents} />
+          </p>
           <ButtonLink href="/galeria" size="lg" block className="mt-6">
             <Gift className="size-5" aria-hidden /> Elegir mi Ribbly
           </ButtonLink>

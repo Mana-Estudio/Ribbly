@@ -11,6 +11,7 @@ import { cn } from '@/ui/cn'
 import { Emoji, EmojiText, Icon } from '@/ui/Icon'
 import { Reveal, Swap, spring, useCalm } from '@/ui/motion'
 import { Magnetic, Mark, SectionHeading } from './primitives'
+import { type PriceTag, usePriceText } from '@/ui/currency/CurrencyContext'
 
 const ICONS: Record<HowItWorksIcon, IconName> = {
   bag: 'compras',
@@ -30,7 +31,7 @@ export function HowItWorks({
   exampleHref,
   sample,
 }: {
-  price: string
+  price: PriceTag
   editorHref: Route
   exampleHref: Route
   /** La temática de la maqueta del pago (la primera del catálogo). */
@@ -190,7 +191,7 @@ function StepVisual({
 }: {
   icon: HowItWorksIcon
   active: boolean
-  price: string
+  price: PriceTag
   sample: { name: string; emoji: string }
 }) {
   switch (icon) {
@@ -211,10 +212,11 @@ function PayVisual({
   sample,
 }: {
   active: boolean
-  price: string
+  price: PriceTag
   sample: { name: string; emoji: string }
 }) {
   const tick = useTicker(active, 1700)
+  const priceText = usePriceText()
   const paid = tick % 2 === 1
   return (
     <div className="w-full rounded-2xl bg-white p-3 text-left shadow-sm">
@@ -226,7 +228,9 @@ function PayVisual({
           <p className="truncate text-xs font-bold text-ink">Ribbly {sample.name}</p>
           <p className="text-[0.65rem] text-ink/50">Pago único</p>
         </div>
-        <p className="ml-auto font-display text-sm font-bold text-ink">{price}</p>
+        <p className="ml-auto font-display text-sm font-bold text-ink">
+          {priceText(price, { lower: true })}
+        </p>
       </div>
       <motion.div
         className={cn(

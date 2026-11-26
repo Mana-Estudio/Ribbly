@@ -86,6 +86,12 @@ describe('arsToUsdCents', () => {
     // Con tasa inválida devuelve 0
     expect(arsToUsdCents(1_500_000, 0)).toBe(0)
   })
+
+  it('un precio mayor a cero nunca se muestra como US$ 0', () => {
+    // $ 1 con el dólar a 1.500 son 0,07 centavos de dólar: se muestra US$ 0,01.
+    expect(arsToUsdCents(100, 1500)).toBe(1)
+    expect(arsToUsdCents(0, 1500)).toBe(0)
+  })
 })
 
 describe('formatMoney', () => {

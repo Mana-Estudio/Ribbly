@@ -1,4 +1,5 @@
 import type { IconName } from '@/domain/icons'
+import type { PriceTag } from '@/ui/currency/CurrencyContext'
 
 /** Lo que la home necesita de cada temática (lo arma la página con el catálogo). */
 export interface HomeTheme {
@@ -12,10 +13,8 @@ export interface HomeTheme {
   features: string[]
   /** El ícono de la temática (nombre o emoji): el de la home, el de su guía en el panel o un regalo. */
   emoji: string
-  /** Precio ya formateado ("$ 4.990"). */
-  price: string
-  /** Cómo se anuncia: "Desde $ 3.490" si hay planes, si no el precio. */
-  priceLabel: string
+  /** Precio sin formatear: el componente lo muestra en la moneda elegida ("Desde …" si hay planes). */
+  price: PriceTag
 }
 
 /** Lo que cuenta la Ribbly de muestra del celular de la portada, pantalla por pantalla. */

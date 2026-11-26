@@ -13,6 +13,7 @@ import { Swap, spring, useCalm } from '@/ui/motion'
 import { rememberRecipient } from '@/ui/recipient'
 import { Magnetic } from './primitives'
 import { lookOf, type HomeTheme } from './theme-look'
+import { usePriceText } from '@/ui/currency/CurrencyContext'
 
 /** La bandera en SVG: Windows no dibuja los emojis de banderas. */
 function FlagAR({ className }: { className?: string }) {
@@ -68,6 +69,7 @@ export function HeroBuilder({
   hasPreviousPurchases: boolean
 }) {
   const router = useRouter()
+  const priceText = usePriceText()
   const calm = useCalm()
   const [focused, setFocused] = useState(false)
   const short = name.trim()
@@ -224,7 +226,7 @@ export function HeroBuilder({
             <div className="mt-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 border-t border-dashed border-ink/10 pt-3 sm:justify-between">
               <p className="flex items-baseline gap-1.5 text-sm text-ink/60">
                 <span className="relative inline-block font-display text-lg font-bold text-ink">
-                  <Swap id={theme.priceLabel}>{theme.priceLabel}</Swap>
+                  <Swap id={priceText(theme.price)}>{priceText(theme.price)}</Swap>
                 </span>
                 · pago único
               </p>
